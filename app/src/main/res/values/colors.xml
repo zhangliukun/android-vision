@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ed4b2b</color>
+    <color name="colorPrimaryDark">#812ce4</color>
+    <color name="colorAccent">#cb2f8f</color>
+
+    <color name="textColor">@android:color/white</color>
+
+    <color name="top1">@color/colorPrimary</color>
+    <color name="top2">@color/colorAccent</color>
+    <color name="top3">@color/colorPrimaryDark</color>
+
+    <color name="nlpPrimaryColor">#812ce5</color>
+
+    <color name="tfe_color_primary">#ffa800</color>
+    <color name="tfe_color_primary_dark">#ff6f00</color>
+    <color name="tfe_color_accent">#425066</color>
+
+    <color name="tfe_semi_transparent">#66000000</color>
+</resources>
