@@ -392,6 +392,7 @@ public class CameraConnectionFragment extends Fragment {
 
 
     // 打开由cameraId指定的摄像机
+    @SuppressLint("MissingPermission")
     private void openCamera(final int width, final int height) {
         setUpCameraOutputs();
         configureTransform(width, height);

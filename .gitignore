@@ -86,8 +86,19 @@ lint/tmp/
 # assets model
 *.pt
 
-# Cpp related
 /app/src/main/jniLibs/
 /.idea/
 /app/.cxx/
 /gradle/
+app/build.gradle
+app/libs/
+app/proguard-rules.pro
+app/src/androidTest/
+app/src/main/assets/
+app/src/main/jniLibs
+app/src/test/
+build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+settings.gradle

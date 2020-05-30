@@ -15,7 +15,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Trace;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
@@ -171,6 +173,8 @@ public abstract class CameraActivity extends AppCompatActivity
             return;
         }
 
+        Log.i("Thread:", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
+
         try {
             // 当分辨率知道以后初始化存储的bitmaps
             if (rgbBytes == null) {
@@ -216,6 +220,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (previewWidth == 0 || previewHeight == 0) {
             return;
         }
+        Log.i("Thread:", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
         if (rgbBytes == null) {
             rgbBytes = new int[previewWidth * previewHeight];
         }
