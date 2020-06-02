@@ -1,22 +1,30 @@
 package com.example.pyvision.colortransfer;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 import com.example.pyvision.R;
 import com.example.pyvision.cameraapi.cameramix.CameraActivity;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -28,6 +36,8 @@ public class ColorTransferActivity2 extends CameraActivity {
 
     public native void transfer_color(Bitmap src_bitmap,Bitmap tar_bitmap,Bitmap result_bitmap);
 
+    // 相册选择回传吗
+    public final static int GALLERY_REQUEST_CODE = 1;
 
 //    private static int mTargetWidth = 1080,mTargetHeight=1920;
     private static int mTargetWidth = 1080,mTargetHeight=1440;
@@ -47,12 +57,18 @@ public class ColorTransferActivity2 extends CameraActivity {
     static Bitmap colorBitmap;
     Paint mPaint;
     float rotateDegree;
+    Button choosePicBtn;
 
     SurfaceHolder.Callback mCallback;
+
+
+    Uri imageUri;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
+        choosePicBtn = findViewById(R.id.choosePic);
 
         try {
             colorBitmap = BitmapFactory.decodeStream(getAssets().open("autumn.jpg"));
@@ -82,6 +98,13 @@ public class ColorTransferActivity2 extends CameraActivity {
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(mCallback);
 
+        choosePicBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                choosePhotoCheckPermission();
+            }
+        });
+
 
 //        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint = new Paint();
@@ -89,6 +112,52 @@ public class ColorTransferActivity2 extends CameraActivity {
         mPaint.setAntiAlias(true);//抗锯齿
 //        mPaint.setFilterBitmap(true);//对位图进行滤波处理
         mPaint.setDither(true);//放抖动
+    }
+
+    private void choosePhotoCheckPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    GALLERY_REQUEST_CODE);
+        } else {
+            choosePhoto();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == this.RESULT_OK){
+            switch (requestCode){
+                case GALLERY_REQUEST_CODE:
+                    imageUri = data.getData();
+                    if(imageUri!=null) {
+                        Bitmap bit = null;
+                        try {
+                            BitmapFactory.Options newOpts = new BitmapFactory.Options();
+//                            newOpts.inJustDecodeBounds = true;//只读取bitmap的宽高信息
+//                            newOpts.inJustDecodeBounds = false;
+                            newOpts.inSampleSize = 3; //压缩率设置为3
+                            bit = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri),null,newOpts);
+
+                            colorBitmap = bit;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("bit", String.valueOf(bit));
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void choosePhoto(){
+        Intent intentToPickPic = new Intent(Intent.ACTION_PICK, null);
+        // 如果限制上传到服务器的图片类型时可以直接写如："image/jpeg 、 image/png等的类型" 所有类型则写 "image/*"
+        intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/jpeg");
+        startActivityForResult(intentToPickPic, GALLERY_REQUEST_CODE);
     }
 
     @Override
