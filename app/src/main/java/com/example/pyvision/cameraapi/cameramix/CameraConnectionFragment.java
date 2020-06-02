@@ -63,6 +63,7 @@ public class CameraConnectionFragment extends Fragment {
      * 这个camera preview size将会被选择到最小像素的帧，能够容纳DESIRED_SIZE x DESIRED_SIZE
      */
     private static final int MINIMUM_PREVIEW_SIZE = 320;
+//    private static final int MINIMUM_PREVIEW_SIZE = 240; //240的话就太糊了
 
     // 将屏幕旋转转换到JPEG的旋转
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -212,7 +213,8 @@ public class CameraConnectionFragment extends Fragment {
      */
     protected static Size chooseOptimalSize(final Size[] choices, final int width, final int height) {
         final int minSize = Math.max(Math.min(width, height), MINIMUM_PREVIEW_SIZE);
-        final Size desiredSize = new Size(width, height);
+//        final Size desiredSize = new Size(width, height);
+        final Size desiredSize = new Size(height, width);
 
         // Collect the supported resolutions that are at least as big as the preview Surface
         // 选择至少与预览Surface一样大的支持的分辨率

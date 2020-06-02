@@ -59,28 +59,28 @@ public class LegacyCameraConnectionFragment extends Fragment {
                     int index = getCameraId();
                     camera = Camera.open(index);
 
+                    Camera.Parameters parameters = camera.getParameters();
+                    List<String> focusModes = parameters.getSupportedFocusModes();
+                    if (focusModes != null
+                            && focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                    }
+                    List<Camera.Size> cameraSizes = parameters.getSupportedPreviewSizes();
+                    Size[] sizes = new Size[cameraSizes.size()];
+                    int i = 0;
+                    for (Camera.Size size : cameraSizes) {
+                        sizes[i++] = new Size(size.width, size.height);
+                    }
+                    Size previewSize =
+                            CameraConnectionFragment.chooseOptimalSize(
+                                    sizes, desiredSize.getWidth(), desiredSize.getHeight());
+                    parameters.setPreviewSize(previewSize.getWidth(), previewSize.getHeight());
+                    camera.setDisplayOrientation(90);
+                    camera.setParameters(parameters);
                     try {
-                        Camera.Parameters parameters = camera.getParameters();
-                        List<String> focusModes = parameters.getSupportedFocusModes();
-                        if (focusModes != null
-                                && focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                        }
-                        List<Camera.Size> cameraSizes = parameters.getSupportedPreviewSizes();
-                        Size[] sizes = new Size[cameraSizes.size()];
-                        int i = 0;
-                        for (Camera.Size size : cameraSizes) {
-                            sizes[i++] = new Size(size.width, size.height);
-                        }
-                        Size previewSize =
-                                CameraConnectionFragment.chooseOptimalSize(
-                                        sizes, desiredSize.getWidth(), desiredSize.getHeight());
-                        parameters.setPreviewSize(previewSize.getWidth(), previewSize.getHeight());
-                        camera.setDisplayOrientation(90);
-                        camera.setParameters(parameters);
                         camera.setPreviewTexture(texture);
-                    } catch (IOException exception) {
-                        camera.release();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
                     camera.setPreviewCallbackWithBuffer(imageListener);

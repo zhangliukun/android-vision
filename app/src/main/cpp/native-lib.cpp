@@ -101,7 +101,7 @@ Java_com_example_pyvision_colortransfer_ColorTransferActivity2_transfer_1color(J
     mat_result = color_transfer(mat_image_src,mat_image_tar, true);
     transpose(mat_result,mat_result);
     flip(mat_result,mat_result,1);
-    resize(mat_result,mat_result,Size(960,960));
+    resize(mat_result,mat_result,Size(1080,1440));
     MatToBitmap(env,mat_result,result_bitmap);
     mat_image_src.release();
     mat_image_src.release();

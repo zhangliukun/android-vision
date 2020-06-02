@@ -31,15 +31,15 @@
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
             tools:context="org.tensorflow.demo.CameraActivity" />
 
         <SurfaceView
             android:id="@+id/mix_surface"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_below="@+id/container"
+            android:layout_height="match_parent"
+            android:visibility="gone"
             />
 
         <androidx.appcompat.widget.Toolbar
@@ -49,9 +49,6 @@
             android:layout_alignParentTop="true"
             android:background="@color/tfe_semi_transparent">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
         </androidx.appcompat.widget.Toolbar>
 
     </RelativeLayout>
