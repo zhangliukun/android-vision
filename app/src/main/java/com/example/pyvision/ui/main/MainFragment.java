@@ -16,8 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pyvision.R;
-import com.example.pyvision.cameraapi.cameraX.CameraXActivity;
 import com.example.pyvision.cameraapi.cameramix.DectorActivity;
+import com.example.pyvision.colortransfer.ColorTransferActivity2;
 import com.example.pyvision.helloworld.HelloworldActivity;
 import com.example.pyvision.mnist.MnistClassificationActivity;
 import com.example.pyvision.vision.VisionListActivity;
@@ -92,7 +92,7 @@ public class MainFragment extends Fragment {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-            Intent intent = new Intent(getActivity(), CameraXActivity.class);
+            Intent intent = new Intent(getActivity(), ColorTransferActivity2.class);
             startActivity(intent);
         });
         colorTransDemo.setOnClickListener(view -> {

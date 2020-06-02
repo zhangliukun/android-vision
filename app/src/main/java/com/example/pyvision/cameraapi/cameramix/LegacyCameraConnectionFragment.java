@@ -9,6 +9,7 @@ import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
 
                     camera.setPreviewCallbackWithBuffer(imageListener);
                     Camera.Size s = camera.getParameters().getPreviewSize();
+                    // 回调onFrameDraw()方法
                     camera.addCallbackBuffer(new byte[ImageUtils.getYUVByteSize(s.height, s.width)]);
 
                     textureView.setAspectRatio(s.height, s.width);
@@ -105,6 +107,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
             };
     /** An additional thread for running tasks that shouldn't block the UI. */
     private HandlerThread backgroundThread;
+
 
     public LegacyCameraConnectionFragment(
             final Camera.PreviewCallback imageListener, final int layout, final Size desiredSize) {

@@ -24,6 +24,7 @@
         <activity android:name=".colortransfer.ColorTransferActivity" />
         <activity android:name=".cameraapi.cameraX.CameraXActivity" />
         <activity android:name=".cameraapi.cameramix.DectorActivity" />
+        <activity android:name=".colortransfer.ColorTransferActivity2" />
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" />

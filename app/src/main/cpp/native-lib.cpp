@@ -86,3 +86,24 @@ Java_com_example_pyvision_cameraapi_cameraX_CameraXActivity_transfer_1color(JNIE
 
 
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_pyvision_colortransfer_ColorTransferActivity2_transfer_1color(JNIEnv *env,
+                                                                               jobject thiz,
+                                                                               jobject src_bitmap,
+                                                                               jobject tar_bitmap,
+                                                                               jobject result_bitmap) {
+    // TODO: implement transfer_color()
+    Mat mat_image_src,mat_image_tar,mat_result;
+    BitmapToMat(env,src_bitmap,mat_image_src);
+    BitmapToMat(env,tar_bitmap,mat_image_tar);
+    mat_result = color_transfer(mat_image_src,mat_image_tar, true);
+    transpose(mat_result,mat_result);
+    flip(mat_result,mat_result,1);
+    resize(mat_result,mat_result,Size(960,960));
+    MatToBitmap(env,mat_result,result_bitmap);
+    mat_image_src.release();
+    mat_image_src.release();
+    mat_result.release();
+}

@@ -99,8 +99,8 @@ public class CameraXActivity extends AbstractCameraXNoWaitActivity{
 
         long startTime= System.currentTimeMillis();
 //        Bitmap bitmap = mTextureView.getBitmap();
-                Bitmap bitmap = toBitmap(image.getImage());
-//        Bitmap bitmap = imageToBitmap(image.getImage(),rotationDegrees);
+//                Bitmap bitmap = toBitmap(image.getImage());
+        Bitmap bitmap = imageToBitmap(image.getImage(),rotationDegrees);
         long getBitmapTime = System.currentTimeMillis();
         Log.i("getBitmap",String.format("方法使用时间 %d ms", getBitmapTime - startTime)); //打印使用时间
 
@@ -190,6 +190,22 @@ public class CameraXActivity extends AbstractCameraXNoWaitActivity{
         long rot_end = System.currentTimeMillis();
         Log.i("rot_time:",String.format("方法使用时间 %d ms", rot_end-rot_start));
         return bitmap;
+    }
+
+    public static Bitmap rotateImage(Bitmap bm,float rotationDegrees){
+        Bitmap bitresult = bm;
+        long rot_start = System.currentTimeMillis();
+        if (rotationDegrees != 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotationDegrees);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm,
+                    bm.getWidth(), bm.getHeight(), true);
+            bitresult = Bitmap.createBitmap(scaledBitmap, 0, 0,
+                    scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        }
+        long rot_end = System.currentTimeMillis();
+        Log.i("rot_time:",String.format("方法使用时间 %d ms", rot_end-rot_start));
+        return bitresult;
     }
 
     @Override

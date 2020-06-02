@@ -160,56 +160,58 @@ public abstract class CameraActivity extends AppCompatActivity
         plusImageView.setOnClickListener(this);
         minusImageView.setOnClickListener(this);
 
-
-
     }
-
 
     /** Callback for android.hardware.Camera API */
     @Override
     public void onPreviewFrame(final byte[] bytes, final Camera camera) {
-        if (isProcessingFrame) {
-            LOGGER.w("Dropping frame!");
-            return;
-        }
+        runInBackground(new Runnable() {
+            @Override
+            public void run() {
+                if (isProcessingFrame) {
+                    LOGGER.w("Dropping frame!");
+                    return;
+                }
 
-        Log.i("Thread:", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
+                Log.i("Thread:", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
 
-        try {
-            // 当分辨率知道以后初始化存储的bitmaps
-            if (rgbBytes == null) {
-                Camera.Size previewSize = camera.getParameters().getPreviewSize();
-                previewHeight = previewSize.height;
-                previewWidth = previewSize.width;
-                rgbBytes = new int[previewWidth * previewHeight];
-                onPreviewSizeChosen(new Size(previewSize.width, previewSize.height), 90);
+                try {
+                    // 当分辨率知道以后初始化存储的bitmaps
+                    if (rgbBytes == null) {
+                        Camera.Size previewSize = camera.getParameters().getPreviewSize();
+                        previewHeight = previewSize.height;
+                        previewWidth = previewSize.width;
+                        rgbBytes = new int[previewWidth * previewHeight];
+                        onPreviewSizeChosen(new Size(previewSize.width, previewSize.height), 90);
+                    }
+                } catch (final Exception e) {
+                    LOGGER.e(e, "Exception!");
+                    return;
+                }
+
+                isProcessingFrame = true;
+                yuvBytes[0] = bytes;
+                yRowStride = previewWidth;
+
+                imageConverter =
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
+                            }
+                        };
+
+                postInferenceCallback =
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                camera.addCallbackBuffer(bytes);
+                                isProcessingFrame = false;
+                            }
+                        };
+                processImage();
             }
-        } catch (final Exception e) {
-            LOGGER.e(e, "Exception!");
-            return;
-        }
-
-        isProcessingFrame = true;
-        yuvBytes[0] = bytes;
-        yRowStride = previewWidth;
-
-        imageConverter =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
-                    }
-                };
-
-        postInferenceCallback =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        camera.addCallbackBuffer(bytes);
-                        isProcessingFrame = false;
-                    }
-                };
-        processImage();
+        });
     }
 
     /** Callback for Camera2 API */
@@ -220,7 +222,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (previewWidth == 0 || previewHeight == 0) {
             return;
         }
-        Log.i("Thread:", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
+//        Log.i("Thread:", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
         if (rgbBytes == null) {
             rgbBytes = new int[previewWidth * previewHeight];
         }
@@ -231,11 +233,11 @@ public abstract class CameraActivity extends AppCompatActivity
                 return;
             }
 
-            if (isProcessingFrame) {
-                image.close();
-                return;
-            }
-            isProcessingFrame = true;
+//            if (isProcessingFrame) {
+//                image.close();
+//                return;
+//            }
+//            isProcessingFrame = true;
             Trace.beginSection("imageAvailable");
             final Image.Plane[] planes = image.getPlanes();
             fillBytes(planes, yuvBytes);
@@ -437,6 +439,7 @@ public abstract class CameraActivity extends AppCompatActivity
                         (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
                                 || isHardwareLevelSupported(
                                 characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
+//                useCamera2API = true;
                 LOGGER.i("Camera API lv2?: %s", useCamera2API);
                 return cameraId;
             }
