@@ -192,21 +192,7 @@ public class CameraXActivity extends AbstractCameraXNoWaitActivity{
         return bitmap;
     }
 
-    public static Bitmap rotateImage(Bitmap bm,float rotationDegrees){
-        Bitmap bitresult = bm;
-        long rot_start = System.currentTimeMillis();
-        if (rotationDegrees != 0) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotationDegrees);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm,
-                    bm.getWidth(), bm.getHeight(), true);
-            bitresult = Bitmap.createBitmap(scaledBitmap, 0, 0,
-                    scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-        }
-        long rot_end = System.currentTimeMillis();
-        Log.i("rot_time:",String.format("方法使用时间 %d ms", rot_end-rot_start));
-        return bitresult;
-    }
+
 
     @Override
     protected void onDestroy() {

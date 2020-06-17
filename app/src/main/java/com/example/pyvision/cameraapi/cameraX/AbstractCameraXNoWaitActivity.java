@@ -83,8 +83,6 @@ public abstract class AbstractCameraXNoWaitActivity<R> extends BaseModuleActivit
         });
 
         final ImageAnalysisConfig imageAnalysisConfig = new ImageAnalysisConfig.Builder()
-//                .setTargetResolution(new Size(224,224))
-//                .setTargetResolution(new Size(1080,2340))
                 .setTargetResolution(new Size(720,1080))
                 .setTargetRotation(Surface.ROTATION_90)
                 .setCallbackHandler(mBackgroundHandler)

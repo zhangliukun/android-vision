@@ -91,6 +91,19 @@ public class OpenGLUtils {
         return program;
     }
 
+    public static void checkGlError(String tag, String label) {
+        int lastError = GLES20.GL_NO_ERROR;
+        int error = GLES20.glGetError();
+        while (error != GLES20.GL_NO_ERROR) {
+            Log.e(tag, label + ": glError " + error);
+            lastError = error;
+            error = GLES20.glGetError();
+        }
+        if (lastError != GLES20.GL_NO_ERROR) {
+            throw new RuntimeException(label + ": glError " + error);
+        }
+    }
+
     public static String loadFromAssets(String fileName, Resources resources) {
         String result = null;
         try {
@@ -106,4 +119,5 @@ public class OpenGLUtils {
         }
         return result;
     }
+
 }

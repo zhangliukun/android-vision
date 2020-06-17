@@ -16,10 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pyvision.R;
-import com.example.pyvision.cameraapi.cameramix.DectorActivity;
+import com.example.pyvision.cameraapi.cameraX.CameraXActivity;
 import com.example.pyvision.colortransfer.ColorTransferActivity2;
 import com.example.pyvision.helloworld.HelloworldActivity;
 import com.example.pyvision.mnist.MnistClassificationActivity;
+import com.example.pyvision.opengl.GLSurfaceCamera2Activity;
 import com.example.pyvision.vision.VisionListActivity;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class MainFragment extends Fragment {
     Button mnistDemo;
     Button jniTest;
     Button colorTransDemo;
+    Button glSurfaceViewBtn;
 
     ImageView IV_bg;
 
@@ -64,6 +66,7 @@ public class MainFragment extends Fragment {
         jniTest = fragment_view.findViewById(R.id.button4);
         colorTransDemo = fragment_view.findViewById(R.id.color_transfer_btn);
         IV_bg = fragment_view.findViewById(R.id.imageview_bg);
+        glSurfaceViewBtn = fragment_view.findViewById(R.id.glSurfaceViewbtn);
 
         helloDemo.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(),HelloworldActivity.class);
@@ -96,7 +99,11 @@ public class MainFragment extends Fragment {
             startActivity(intent);
         });
         colorTransDemo.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), DectorActivity.class);
+            Intent intent = new Intent(getActivity(), CameraXActivity.class);
+            startActivity(intent);
+        });
+        glSurfaceViewBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), GLSurfaceCamera2Activity.class);
             startActivity(intent);
         });
 

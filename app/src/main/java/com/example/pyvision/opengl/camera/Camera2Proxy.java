@@ -56,6 +56,7 @@ public class Camera2Proxy {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     private ImageReader mImageReader;
+    private ImageReader mPreviewImageReader;
     private Surface mPreviewSurface;
     private SurfaceTexture mPreviewSurfaceTexture;
     private OrientationEventListener mOrientationEventListener;
@@ -63,6 +64,8 @@ public class Camera2Proxy {
     private int mDisplayRotate = 0;
     private int mDeviceOrientation = 0; // 设备方向，由相机传感器获取
     private int mZoom = 1; // 缩放
+
+    private ImageReader.OnImageAvailableListener previewReaderListener;
 
     /**
      * 打开摄像头的回调
@@ -115,8 +118,9 @@ public class Camera2Proxy {
             Log.d(TAG, "picture size: " + largest.getWidth() + "*" + largest.getHeight());
             mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(), ImageFormat.JPEG, 2);
             // 预览大小，根据上面选择的拍照图片的长宽比，选择一个和控件长宽差不多的大小
-            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, largest);
-//            mPreviewSize = new Size(1080,1920);
+            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, largest); //注意！！！！！这里有坑，size的安排是(height,width)
+            mPreviewSize = new Size(480,360);
+            mPreviewImageReader = ImageReader.newInstance(mPreviewSize.getWidth(), mPreviewSize.getHeight(), ImageFormat.YUV_420_888, 2);
             Log.d(TAG, "preview size: " + mPreviewSize.getWidth() + "*" + mPreviewSize.getHeight());
             // 打开摄像头
             mCameraManager.openCamera(Integer.toString(mCameraId), mStateCallback, mBackgroundHandler);
@@ -139,6 +143,10 @@ public class Camera2Proxy {
             mImageReader.close();
             mImageReader = null;
         }
+        if (mPreviewImageReader != null){
+            mPreviewImageReader.close();
+            mPreviewImageReader = null;
+        }
         mOrientationEventListener.disable();
         stopBackgroundThread(); // 对应 openCamera() 方法中的 startBackgroundThread()
     }
@@ -149,6 +157,10 @@ public class Camera2Proxy {
             return;
         }
         mImageReader.setOnImageAvailableListener(onImageAvailableListener, null);
+    }
+
+    public void setPreviewImageAvailableListener(ImageReader.OnImageAvailableListener onImageAvailableListener){
+        mPreviewImageReader.setOnImageAvailableListener(onImageAvailableListener,mBackgroundHandler);
     }
 
     public void setPreviewSurface(SurfaceHolder holder) {
@@ -167,7 +179,11 @@ public class Camera2Proxy {
                 mPreviewSurface = new Surface(mPreviewSurfaceTexture);
             }
             mPreviewRequestBuilder.addTarget(mPreviewSurface); // 设置预览输出的 Surface
-            mCameraDevice.createCaptureSession(Arrays.asList(mPreviewSurface, mImageReader.getSurface()),
+
+            mPreviewImageReader.setOnImageAvailableListener(previewReaderListener,mBackgroundHandler);
+            mPreviewRequestBuilder.addTarget(mPreviewImageReader.getSurface());
+
+            mCameraDevice.createCaptureSession(Arrays.asList(mPreviewSurface, mImageReader.getSurface(),mPreviewImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
 
                         @Override
@@ -288,6 +304,14 @@ public class Camera2Proxy {
         openCamera(width, height);
     }
 
+    /**
+     * 注意！！！！！这里有坑，size的安排是(height,width)
+     * @param sizes
+     * @param viewWidth
+     * @param viewHeight
+     * @param pictureSize
+     * @return
+     */
     private Size chooseOptimalSize(Size[] sizes, int viewWidth, int viewHeight, Size pictureSize) {
         int totalRotation = getRotation();
         boolean swapRotation = totalRotation == 90 || totalRotation == 270;

@@ -7,6 +7,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import static com.example.pyvision.opengl.display.ImageDisplay.NO_FILTER_FRAGMENT_SHADER;
+import static com.example.pyvision.opengl.display.ImageDisplay.NO_FILTER_VERTEX_SHADER;
+
 /**
  * Created by zale.zhang on 2020/6/9.
  *
@@ -14,7 +17,9 @@ import java.nio.FloatBuffer;
  */
 public class CameraDrawer {
 
-    private final String VERTEX_SHADER = "" +
+    private static final String TAG = CameraDrawer.class.getSimpleName();
+
+    private static final String VERTEX_SHADER = "" +
             // 顶点坐标
             "attribute vec4 vPosition;" +
             // 纹理坐标
@@ -27,36 +32,16 @@ public class CameraDrawer {
             "textureCoordinate = inputTextureCoordinate;" +
             "}";
 
-    private final String FRAGMENT_SHADER = "" +
+    private static final String FRAGMENT_SHADER = "" +
             "#extension GL_OES_EGL_image_external : require\n"+
             "precision mediump float;" +
             "varying vec2 textureCoordinate;\n" +
             "uniform samplerExternalOES s_texture;\n" +
             "void main() {" +
             "  gl_FragColor = texture2D( s_texture, textureCoordinate );\n" +
-            "  float fGrayColor = (0.3*gl_FragColor.r + 0.59*gl_FragColor.g + 0.11*gl_FragColor.b);\n" +
-            "  gl_FragColor = vec4(fGrayColor,fGrayColor,fGrayColor,1.0);\n"+
+//            "  float fGrayColor = (0.3*gl_FragColor.r + 0.59*gl_FragColor.g + 0.11*gl_FragColor.b);\n" +    //灰度化操作
+//            "  gl_FragColor = vec4(fGrayColor,fGrayColor,fGrayColor,1.0);\n"+
             "}";
-
-    private final String IMAGE_VERTEX_SHADER = "" +
-            "attribute vec4 vPosition;" +
-            "attribute vec2 inputTextureCoordinate;" +
-            "varying vec2 textureCoordinate;" +
-            "void main()" +
-            "{"+
-            "gl_Position = vPosition;"+
-            "textureCoordinate = inputTextureCoordinate;" +
-            "}";
-
-    private static final String IMAGE_LABEL_FRAGMENT =
-                    "#extension GL_OES_EGL_image_external : require\n"
-                    + "precision highp float;"
-                    + "uniform sampler2D inTexture;"
-                    + "varying vec2 textureCoordinate;"
-                    + "void main() {"
-                    + "    gl_FragColor = texture2D(inTexture, textureCoordinate);"
-                    + "}";
-
 
     private FloatBuffer mVertexBuffer;
     private FloatBuffer mBackTextureBuffer;
@@ -141,5 +126,13 @@ public class CameraDrawer {
 
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mTextureHandle);
+
+//        GLES20.glDepthMask(true);
+//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+//        OpenGLUtils.checkGlError(TAG, "after draw");
+    }
+
+    public static int getImageProgram(){
+        return OpenGLUtils.createProgram(NO_FILTER_VERTEX_SHADER,NO_FILTER_FRAGMENT_SHADER);
     }
 }

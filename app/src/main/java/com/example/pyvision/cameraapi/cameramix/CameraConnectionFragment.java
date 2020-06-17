@@ -80,7 +80,7 @@ public class CameraConnectionFragment extends Fragment {
     private final Semaphore cameraOpenCloseLock = new Semaphore(1);
 
     // 当帧到来时接受
-    private final ImageReader.OnImageAvailableListener imageListener;;
+    private final ImageReader.OnImageAvailableListener imageListener;
 
     // Tensorflow需要的像素的输入大小
     private final Size inputSize;
@@ -453,6 +453,8 @@ public class CameraConnectionFragment extends Fragment {
             LOGGER.e(e, "Exception!");
         }
     }
+
+
 
     // 对摄像机预览创建一个CameraCaptureSession
     private void createCameraPreviewSession() {

@@ -234,4 +234,10 @@ public class ColorTransferActivity2 extends CameraActivity {
     protected void setUseNNAPI(boolean isChecked) {
 
     }
+
+    @Override
+    public synchronized void onDestroy() {
+        super.onDestroy();
+        colorBitmap = null;
+    }
 }

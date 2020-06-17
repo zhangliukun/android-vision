@@ -9,7 +9,6 @@ import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,6 +146,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
         // a camera and start preview from here (otherwise, we wait until the surface is ready in
         // the SurfaceTextureListener).
 
+        //todo: camera1 has some problems when call the onResume()
         if (textureView.isAvailable()) {
             camera.startPreview();
         } else {
