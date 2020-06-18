@@ -174,16 +174,17 @@ public class Camera2Proxy {
     private void initPreviewRequest() {
         try {
             mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            if (mPreviewSurfaceTexture != null && mPreviewSurface == null) { // use texture view
-                mPreviewSurfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
-                mPreviewSurface = new Surface(mPreviewSurfaceTexture);
-            }
-            mPreviewRequestBuilder.addTarget(mPreviewSurface); // 设置预览输出的 Surface
+//            if (mPreviewSurfaceTexture != null && mPreviewSurface == null) { // use texture view
+//                mPreviewSurfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
+//                mPreviewSurface = new Surface(mPreviewSurfaceTexture);
+//            }
+//            mPreviewRequestBuilder.addTarget(mPreviewSurface); // 设置预览输出的 Surface
 
             mPreviewImageReader.setOnImageAvailableListener(previewReaderListener,mBackgroundHandler);
             mPreviewRequestBuilder.addTarget(mPreviewImageReader.getSurface());
 
-            mCameraDevice.createCaptureSession(Arrays.asList(mPreviewSurface, mImageReader.getSurface(),mPreviewImageReader.getSurface()),
+//            mCameraDevice.createCaptureSession(Arrays.asList(mPreviewSurface, mImageReader.getSurface(),mPreviewImageReader.getSurface()),
+            mCameraDevice.createCaptureSession(Arrays.asList(mImageReader.getSurface(),mPreviewImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
 
                         @Override

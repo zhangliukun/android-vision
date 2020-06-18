@@ -38,4 +38,11 @@
     <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">TFL Detect</string>
     <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
 
+    <string name="plane_other">Other</string>
+    <string name="plane_floor">Floor</string>
+    <string name="plane_wall">Wall</string>
+    <string name="plane_table">Table</string>
+    <string name="plane_seat">Seat</string>
+    <string name="plane_ceiling">Ceiling</string>
+
 </resources>

@@ -9,16 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pyvision.R;
-import com.example.pyvision.cameraapi.cameraX.CameraXActivity;
+import com.example.pyvision.cameraapi.cameramix.DectorActivity;
 import com.example.pyvision.colortransfer.ColorTransferActivity2;
-import com.example.pyvision.helloworld.HelloworldActivity;
 import com.example.pyvision.mnist.MnistClassificationActivity;
 import com.example.pyvision.opengl.GLSurfaceCamera2Activity;
 import com.example.pyvision.vision.VisionListActivity;
@@ -38,12 +36,11 @@ public class MainFragment extends Fragment {
     public native String stringFromJNI();
     public native int[] grayJNI(int[] buf,int w, int h);
 
-    Button helloDemo;
-    Button pytorchDemo;
-    Button mnistDemo;
-    Button jniTest;
-    Button colorTransDemo;
-    Button glSurfaceViewBtn;
+    Button ImageClassificationBtn;
+    Button ObjectDetectionBtn;
+    Button ColorTransferBtn;
+    Button OpenGLBtn;
+    Button MnistBtn;
 
     ImageView IV_bg;
 
@@ -60,50 +57,37 @@ public class MainFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View fragment_view = inflater.inflate(R.layout.main_fragment, container, false);
-        helloDemo = fragment_view.findViewById(R.id.button);
-        pytorchDemo = fragment_view.findViewById(R.id.button2);
-        mnistDemo = fragment_view.findViewById(R.id.button3);
-        jniTest = fragment_view.findViewById(R.id.button4);
-        colorTransDemo = fragment_view.findViewById(R.id.color_transfer_btn);
+        ImageClassificationBtn = fragment_view.findViewById(R.id.button);
+        ObjectDetectionBtn = fragment_view.findViewById(R.id.button2);
+        ColorTransferBtn = fragment_view.findViewById(R.id.button3);
+        OpenGLBtn = fragment_view.findViewById(R.id.button4);
+        MnistBtn = fragment_view.findViewById(R.id.button5);
         IV_bg = fragment_view.findViewById(R.id.imageview_bg);
-        glSurfaceViewBtn = fragment_view.findViewById(R.id.glSurfaceViewbtn);
 
-        helloDemo.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(),HelloworldActivity.class);
+        ImageClassificationBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(),VisionListActivity.class);
             startActivity(intent);
         });
 
-        pytorchDemo.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), VisionListActivity.class);
+        ObjectDetectionBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), DectorActivity.class);
             startActivity(intent);
         });
 
-        mnistDemo.setOnClickListener(view -> {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    test_mnist();
-//                }
-//            }).start();
+        ColorTransferBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), MnistClassificationActivity.class);
             startActivity(intent);
         });
-        jniTest.setOnClickListener(view -> {
-            Toast.makeText(getActivity(),stringFromJNI(),Toast.LENGTH_LONG).show();
-//            try {
-//                testGray();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+        ColorTransferBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ColorTransferActivity2.class);
             startActivity(intent);
         });
-        colorTransDemo.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), CameraXActivity.class);
+        OpenGLBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), GLSurfaceCamera2Activity.class);
             startActivity(intent);
         });
-        glSurfaceViewBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), GLSurfaceCamera2Activity.class);
+        MnistBtn.setOnClickListener(view->{
+            Intent intent = new Intent(getActivity(), MnistClassificationActivity.class);
             startActivity(intent);
         });
 

@@ -58,6 +58,8 @@ public class ColorTransferActivity2 extends CameraActivity {
     Paint mPaint;
     float rotateDegree;
     Button choosePicBtn;
+    Button switchModeBtn;
+    boolean container_hidden = false;
 
     SurfaceHolder.Callback mCallback;
 
@@ -69,7 +71,10 @@ public class ColorTransferActivity2 extends CameraActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
         choosePicBtn = findViewById(R.id.choosePic);
-
+        switchModeBtn = findViewById(R.id.switch_mode);
+        choosePicBtn.setVisibility(View.VISIBLE);
+        switchModeBtn.setVisibility(View.VISIBLE);
+        findViewById(R.id.bottom_sheet_layout).setVisibility(View.GONE);
         try {
             colorBitmap = BitmapFactory.decodeStream(getAssets().open("autumn.jpg"));
         } catch (IOException e) {
@@ -102,6 +107,18 @@ public class ColorTransferActivity2 extends CameraActivity {
             @Override
             public void onClick(View view) {
                 choosePhotoCheckPermission();
+            }
+        });
+
+        switchModeBtn.setOnClickListener((View view) ->{
+            if (container_hidden){
+                findViewById(R.id.container).setVisibility(View.VISIBLE);
+                findViewById(R.id.mix_surface).setVisibility(View.GONE);
+                container_hidden = false;
+            }else {
+                findViewById(R.id.container).setVisibility(View.GONE);
+                findViewById(R.id.mix_surface).setVisibility(View.VISIBLE);
+                container_hidden = true;
             }
         });
 
@@ -216,18 +233,10 @@ public class ColorTransferActivity2 extends CameraActivity {
         return DESIRED_PREVIEW_SIZE;
     }
 
-    boolean container_hidden = false;
+
     @Override
     protected void setNumThreads(int numThreads) {
-        if (container_hidden){
-            findViewById(R.id.container).setVisibility(View.VISIBLE);
-            findViewById(R.id.mix_surface).setVisibility(View.GONE);
-            container_hidden = false;
-        }else {
-            findViewById(R.id.container).setVisibility(View.GONE);
-            findViewById(R.id.mix_surface).setVisibility(View.VISIBLE);
-            container_hidden = true;
-        }
+
     }
 
     @Override
