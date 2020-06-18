@@ -13,13 +13,16 @@
         app:layout_constraintBottom_toTopOf="@+id/maxindex_textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="200dp"/>
 
     <TextView
         android:id="@+id/maxindex_textView"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="maxindex"
+        android:layout_height="wrap_content"
+        android:textSize="80sp"
+        android:text="0"
+        app:layout_constraintTop_toBottomOf="@+id/mnist_classification_texture_view_stub"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
