@@ -22,15 +22,19 @@ Welcome to make suggestions on my work! ORZ~
 
 ## Demo
 ### **Image Classification:**
-
+![images](images/imc1.jpg)
 
 ### **Mnist Classification:**
+![images](images/mnist1.jpg)
 
 ### **Object Detection:**
+![images](images/obj1.jpg)
 
 ### **Color Transfer:**
+![images](images/colort1.jpg)
 
 ### **OpenGLES Camera2:**
+![images](images/opgl1.jpg)
 
 
 ## ToDo
