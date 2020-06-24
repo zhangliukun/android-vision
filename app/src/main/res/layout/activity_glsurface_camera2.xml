@@ -67,4 +67,22 @@
         android:layout_margin="20dp"
         android:scaleType="centerCrop"/>
 
+    <Button
+        android:id="@+id/preview_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/choose_pic"
+        android:layout_toEndOf="@+id/choose_pic"
+        android:text="预览切换" />
+
+    <Button
+        android:id="@+id/choose_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="23dp"
+        android:layout_marginBottom="106dp"
+        android:text="选择图片" />
+
 </RelativeLayout>

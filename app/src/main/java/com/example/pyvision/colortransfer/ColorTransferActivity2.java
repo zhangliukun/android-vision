@@ -156,7 +156,7 @@ public class ColorTransferActivity2 extends CameraActivity {
                             BitmapFactory.Options newOpts = new BitmapFactory.Options();
 //                            newOpts.inJustDecodeBounds = true;//只读取bitmap的宽高信息
 //                            newOpts.inJustDecodeBounds = false;
-                            newOpts.inSampleSize = 3; //压缩率设置为3
+                            newOpts.inSampleSize = 8; //压缩率设置为3
                             bit = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri),null,newOpts);
 
                             colorBitmap = bit;
@@ -207,6 +207,7 @@ public class ColorTransferActivity2 extends CameraActivity {
             canvas.drawBitmap(restlt_Bitmap,srcRect,dstRect,mPaint);
             surfaceHolder.unlockCanvasAndPost(canvas);
             surfaceView.draw(canvas);
+            restlt_Bitmap.recycle();
         }
 
         long end_time = System.currentTimeMillis();

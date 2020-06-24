@@ -1,23 +1,30 @@
 package com.example.pyvision.opengl;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.pyvision.R;
 import com.example.pyvision.opengl.camera.Camera2Proxy;
 import com.example.pyvision.opengl.camera.ImageUtils;
 
+import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 
 /**
@@ -27,6 +34,9 @@ import java.nio.ByteBuffer;
  */
 public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.OnClickListener {
 
+    // 相册选择回传吗
+    public final static int GALLERY_REQUEST_CODE = 1;
+
     private static final String TAG = "GLSurfaceCamera2Act";
 
     private ImageView mCloseIv;
@@ -35,7 +45,14 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
     private ImageView mPictureIv;
     private Camera2GLSurfaceView mCameraView;
 
+    private Button mPreviewSwitchBtn;
+    private Button mSelectImageBtn;
+
     private Camera2Proxy mCameraProxy;
+
+    Uri imageUri;
+    boolean showPreview = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +71,13 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
         mPictureIv = findViewById(R.id.picture_iv);
         mPictureIv.setOnClickListener(this);
         mPictureIv.setImageBitmap(ImageUtils.getLatestThumbBitmap());
+
+        mPreviewSwitchBtn = findViewById(R.id.preview_switch);
+        mPreviewSwitchBtn.setOnClickListener(this);
+        mSelectImageBtn = findViewById(R.id.choose_pic);
+        mSelectImageBtn.setOnClickListener(this);
+
+
         mCameraView = findViewById(R.id.camera_view);
         mCameraProxy = mCameraView.getCameraProxy();
 //        mCameraProxy.setImageAvailableListener();
@@ -77,8 +101,60 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivity(intent);
                 break;
+            case R.id.preview_switch:
+                showPreview = !showPreview;
+                mCameraView.setShowPreview(showPreview);
+                break;
+            case R.id.choose_pic:
+                choosePhotoCheckPermission();
+                break;
         }
     }
+
+    private void choosePhotoCheckPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    GALLERY_REQUEST_CODE);
+        } else {
+            choosePhoto();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == this.RESULT_OK){
+            switch (requestCode){
+                case GALLERY_REQUEST_CODE:
+                    imageUri = data.getData();
+                    if(imageUri!=null) {
+                        try {
+                            BitmapFactory.Options newOpts = new BitmapFactory.Options();
+//                            newOpts.inJustDecodeBounds = true;//只读取bitmap的宽高信息
+//                            newOpts.inJustDecodeBounds = false;
+                            newOpts.inSampleSize = 16; //压缩率设置为3
+                            mCameraView.setColorBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri),null,newOpts));
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void choosePhoto(){
+        Intent intentToPickPic = new Intent(Intent.ACTION_PICK, null);
+        // 如果限制上传到服务器的图片类型时可以直接写如："image/jpeg 、 image/png等的类型" 所有类型则写 "image/*"
+        intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/jpeg");
+        startActivityForResult(intentToPickPic, GALLERY_REQUEST_CODE);
+    }
+
+
 
     private ImageReader.OnImageAvailableListener mOnImageAvailableListener = new ImageReader.OnImageAvailableListener
             () {
@@ -122,4 +198,8 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

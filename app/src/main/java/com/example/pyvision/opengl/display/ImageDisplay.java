@@ -149,10 +149,8 @@ public class ImageDisplay {
 
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
         GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-
         // 绘制顶点 ，方式有顶点法和索引法
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4); // 顶点法，按照传入渲染管线的顶点顺序及采用的绘制方式将顶点组成图元进行绘制
-
         GLES20.glDisableVertexAttribArray(mGLAttribPosition);
         GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);

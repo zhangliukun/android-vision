@@ -30,6 +30,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
 
+    public native void transfer_color(Bitmap src_bitmap,Bitmap tar_bitmap,Bitmap result_bitmap);
+
     private static final String TAG = "Camera2GLSurfaceView";
     private Camera2Proxy mCameraProxy;
     private SurfaceTexture mSurfaceTexture;
@@ -46,6 +48,9 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
     private byte[][] yuvBytes = new byte[3][];
     private int yRowStride;
     private Bitmap rgbFrameBitmap;
+    private Bitmap colorBitmap;
+    private Bitmap resultBitmap;
+    private boolean showPreview = true;
 
     public Camera2GLSurfaceView(Context context) {
         this(context, null);
@@ -76,11 +81,15 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
         Size size = mCameraProxy.getPreviewSize();
 
         rgbFrameBitmap = Bitmap.createBitmap(size.getWidth(), size.getHeight(), Bitmap.Config.ARGB_8888);
+        resultBitmap = Bitmap.createBitmap(size.getWidth(), size.getHeight(), Bitmap.Config.ARGB_8888);
+//        resultBitmap = Bitmap.createBitmap(size.getHeight(), size.getWidth(), Bitmap.Config.ARGB_8888);
         imageDisplay.init(rgbFrameBitmap);
 
         mCameraProxy.setPreviewImageAvailableListener(new ImageReader.OnImageAvailableListener() {
             @Override
             public void onImageAvailable(ImageReader reader) {
+
+                long start_time = System.currentTimeMillis();
 
                 int previewWidth = size.getWidth();
                 int previewHeight = size.getHeight();
@@ -88,13 +97,24 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
                     rgbBytes = new int[previewWidth * previewHeight];
                 }
                 final Image image = reader.acquireLatestImage();
+
+                long acquireLatestImage = System.currentTimeMillis();
+                Log.i("zale","acquireLatestImage:"+(acquireLatestImage- start_time)+"ms");
 //
                 Trace.beginSection("imageAvailable");
+                if(image == null){
+                    Log.i("zale","image == null,continue");
+                    return;
+                }
                 final Image.Plane[] planes = image.getPlanes();
                 fillBytes(planes, yuvBytes);
                 yRowStride = planes[0].getRowStride();
                 final int uvRowStride = planes[1].getRowStride();
                 final int uvPixelStride = planes[1].getPixelStride();
+
+                long fill_bytes = System.currentTimeMillis();
+                Log.i("zale","fill_bytes:"+(fill_bytes- acquireLatestImage)+"ms");
+
                 ImageUtils.convertYUV420ToARGB8888(
                         yuvBytes[0],
                         yuvBytes[1],
@@ -105,12 +125,35 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
                         uvRowStride,
                         uvPixelStride,
                         rgbBytes);
+
+                long convert = System.currentTimeMillis();
+                Log.i("zale","convert:"+(convert- fill_bytes)+"ms");
+
                 rgbFrameBitmap.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight);
                 image.close();
+
+                long setPixels = System.currentTimeMillis();
+                Log.i("zale","setPixels:"+(setPixels- convert)+"ms");
+
+                if(colorBitmap != null){
+                    transfer_color(colorBitmap,rgbFrameBitmap,resultBitmap);
+                }
+
+                long transcolor = System.currentTimeMillis();
+                Log.i("zale","transcolor:"+(transcolor- setPixels)+"ms");
+
                 requestRender();
             }
         });
 
+    }
+
+    public void setColorBitmap(Bitmap bitmap){
+        colorBitmap = bitmap;
+    }
+
+    public void setShowPreview(boolean showPreview){
+        this.showPreview = showPreview;
     }
 
     @Override
@@ -128,21 +171,33 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
 //        imageDisplay.adjustImageScaling(width,height);// 画普通图像的时候可能需要进行尺度的调整，但是摄像机预览的话因为已经设定了比例，所以不需要调整
     }
 
+    private long global_timestamp = System.currentTimeMillis();
+
     @Override
     public void onDrawFrame(GL10 gl) {
+        long start = System.currentTimeMillis();
+
+        Log.i("zale","total_onDrawFrame_tims:"+(start- global_timestamp)+"ms");
+
         GLES20.glClearColor(0, 0, 0, 0);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 //        mSurfaceTexture.updateTexImage();
 //        mDrawer.draw(mTextureId, mCameraProxy.isFrontCamera());
-        if(rgbFrameBitmap != null){
-            imageDisplay.onDrawFrame(rgbFrameBitmap);
+
+
+        if(this.showPreview){
+            if(rgbFrameBitmap != null){
+                imageDisplay.onDrawFrame(rgbFrameBitmap);
+            }
+        }else {
+            if(resultBitmap != null){
+                imageDisplay.onDrawFrame(resultBitmap);
+            }
         }
-//        if(count % 2==0){
-//            imageDisplay.onDrawFrame(bitmap1);
-//        }else {
-//            imageDisplay.onDrawFrame(bitmap2);
-//        }
-//        count++;
+
+        long onDrawFrame = System.currentTimeMillis();
+        global_timestamp = onDrawFrame;
+        Log.i("zale","onDrawFrame:"+(onDrawFrame- start)+"ms");
 
     }
 
