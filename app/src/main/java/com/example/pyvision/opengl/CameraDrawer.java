@@ -127,9 +127,9 @@ public class CameraDrawer {
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mTextureHandle);
 
-//        GLES20.glDepthMask(true);
-//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-//        OpenGLUtils.checkGlError(TAG, "after draw");
+        GLES20.glDepthMask(true);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        OpenGLUtils.checkGlError(TAG, "after draw");
     }
 
     public static int getImageProgram(){

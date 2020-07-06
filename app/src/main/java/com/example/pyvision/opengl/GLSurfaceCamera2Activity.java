@@ -201,5 +201,6 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mCameraProxy.releaseCamera();
     }
 }

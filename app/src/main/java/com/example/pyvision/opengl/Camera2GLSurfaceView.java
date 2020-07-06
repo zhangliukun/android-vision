@@ -208,7 +208,7 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
      */
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        requestRender();
+//        requestRender();
     }
 
     private void setAspectRatio(int width, int height) {

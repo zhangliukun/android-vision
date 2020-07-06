@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pyvision.R;
+import com.example.pyvision.ar.world.WorldActivity;
 import com.example.pyvision.cameraapi.cameramix.DectorActivity;
 import com.example.pyvision.colortransfer.ColorTransferActivity2;
 import com.example.pyvision.mnist.MnistClassificationActivity;
@@ -41,6 +42,7 @@ public class MainFragment extends Fragment {
     Button ColorTransferBtn;
     Button OpenGLBtn;
     Button MnistBtn;
+    Button ArcoreBtn;
 
     ImageView IV_bg;
 
@@ -63,6 +65,7 @@ public class MainFragment extends Fragment {
         OpenGLBtn = fragment_view.findViewById(R.id.button4);
         MnistBtn = fragment_view.findViewById(R.id.button5);
         IV_bg = fragment_view.findViewById(R.id.imageview_bg);
+        ArcoreBtn = fragment_view.findViewById(R.id.button6);
 
         ImageClassificationBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(),VisionListActivity.class);
@@ -88,6 +91,10 @@ public class MainFragment extends Fragment {
         });
         MnistBtn.setOnClickListener(view->{
             Intent intent = new Intent(getActivity(), MnistClassificationActivity.class);
+            startActivity(intent);
+        });
+        ArcoreBtn.setOnClickListener(view ->{
+            Intent intent = new Intent(getActivity(), WorldActivity.class);
             startActivity(intent);
         });
 
