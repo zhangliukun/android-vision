@@ -66,7 +66,8 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
         mCameraProxy = new Camera2Proxy((Activity) context);
         setEGLContextClientVersion(2);
         setRenderer(this);
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
     @Override
@@ -142,7 +143,7 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
                 long transcolor = System.currentTimeMillis();
                 Log.i("zale","transcolor:"+(transcolor- setPixels)+"ms");
 
-                requestRender();
+//                requestRender();
             }
         });
 
