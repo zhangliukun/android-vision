@@ -131,13 +131,12 @@ public class RenderUtil implements GLSurfaceView.Renderer{
 
     public void setColorBitmap(Bitmap bitmap){
         colorBitmap = bitmap;
+        mObjectDisplay.updateTextureImg(colorBitmap);
     }
 
     public void setTransfer(boolean transfer){
         isTransfer = transfer;
-        if(isTransfer){
-            mObjectDisplay.updateTextureImg(mContext,colorBitmap);
-        }
+        mObjectDisplay.showTransferedColor(isTransfer);
     }
 
     public boolean getTransfer(){

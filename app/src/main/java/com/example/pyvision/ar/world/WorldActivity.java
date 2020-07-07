@@ -109,7 +109,7 @@ public class WorldActivity extends Activity {
         selectBtn = findViewById(R.id.select_btn);
         previewBtn = findViewById(R.id.preview_btn);
         selectBtn.setOnClickListener(view ->{
-            choosePhoto();
+            choosePhotoCheckPermission();
         });
         previewBtn.setOnClickListener(view->{
             mRenderUtil.setTransfer(!mRenderUtil.getTransfer());

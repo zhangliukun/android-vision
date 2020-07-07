@@ -99,7 +99,9 @@ public class ObjectDisplay {
     private float mHeight;
 
     private Bitmap resultBitmap;
+    private Bitmap textureBitmap;
     private boolean changeTex = false;
+    private boolean textureBinded = true;
 
     /**
      * Set the size of the screen display area.
@@ -150,9 +152,9 @@ public class ObjectDisplay {
     }
 
     private void initGlTextureData(Context context) {
-        Bitmap textureBitmap;
-        try (InputStream inputStream = context.getAssets().open("andy/andy3.png")) {
+        try (InputStream inputStream = context.getAssets().open("andy/andy.png")) {
             textureBitmap = BitmapFactory.decodeStream(inputStream);
+            resultBitmap = Bitmap.createBitmap(textureBitmap.getWidth(), textureBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         } catch (IllegalArgumentException | IOException e) {
             Log.e(TAG, "Get data failed!");
             return;
@@ -161,7 +163,7 @@ public class ObjectDisplay {
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
         GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-        textureBitmap.recycle();
+//        textureBitmap.recycle();
         ShaderUtil.checkGlError(TAG, "load texture");
     }
 
@@ -190,37 +192,14 @@ public class ObjectDisplay {
         ShaderUtil.checkGlError(TAG, "obj buffer load");
     }
 
-    public void updateTextureImg(Context context,Bitmap colorBitmap){
-//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
-//        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+    public void updateTextureImg(Bitmap colorBitmap){
+        ColorTransferUtil.transfer_color_same_size(colorBitmap,textureBitmap,resultBitmap);
+        textureBinded = false;
+    }
 
-        Bitmap textureBitmap;
-        Bitmap resultBitmap;
-        try (InputStream inputStream = context.getAssets().open("andy/andy.png")) {
-            textureBitmap = BitmapFactory.decodeStream(inputStream);
-            resultBitmap = Bitmap.createBitmap(textureBitmap.getWidth(), textureBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        } catch (IllegalArgumentException | IOException e) {
-            Log.e(TAG, "Get data failed!");
-            return;
-        }
-        if(colorBitmap != null){
-            ColorTransferUtil.transfer_color_same_size(colorBitmap,textureBitmap,resultBitmap);
-        }
-
-        this.resultBitmap = resultBitmap;
-        changeTex = true;
-
-//        if (colorBitmap != null){
-//            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, resultBitmap, 0);
-//        }else {
-//            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
-//        }
-//        GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-//        GLES20.glUniform1i(mTextureUniform, 0);
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-        textureBitmap.recycle();
-        ShaderUtil.checkGlError(TAG, "load texture");
+    public void showTransferedColor(boolean show){
+        this.changeTex = show;
+        textureBinded = false;
     }
 
     private ObjectData readObject(Context context) {
@@ -308,18 +287,21 @@ public class ObjectDisplay {
         // Set the object color property.
 //        GLES20.glUniform4fv(mColorUniform, 1, objColors, 0);
         //需要在opengl的Render线程中更新纹理才能生效
-        if(changeTex){
+        if(!textureBinded){
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, resultBitmap, 0);
+            if(changeTex){
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, resultBitmap, 0);
+            }else {
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
+            }
             GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-            changeTex = false;
-        }else {
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
-            GLES20.glUniform1i(mTextureUniform, 0);
+            textureBinded = true;
         }
-
+        // 这里面还是需要每一帧都激活绑定的，不然会产生第一个对象绘制时跳帧
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
+//        GLES20.glUniform1i(mTextureUniform, 0);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mVertexBufferId);
 
