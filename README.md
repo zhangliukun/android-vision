@@ -52,6 +52,6 @@ Welcome to make suggestions on my work! ORZ~
 
 
 ## ToDo
-- ~~ [✔️]Add the ARcore library and realize the Smart Home demo, which can place our own 3D model to the real word. ~~
+- [✔️]Add the ARcore library and realize the Smart Home demo, which can place our own 3D model to the real word.
 - Combine some popular AI projects such as Object detection to the AR world, which can be call AIR(AI+AR)
 - Refactor the code.
