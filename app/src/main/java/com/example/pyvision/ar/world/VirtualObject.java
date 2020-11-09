@@ -15,14 +15,14 @@ import com.huawei.hiar.ARAnchor;
  * @since 2019-06-13
  */
 public class VirtualObject {
-//    private static final float ROTATION_ANGLE = 315.0f;
-    private static final float ROTATION_ANGLE = 150.0f;
+    public static float ROTATION_ANGLE = 360.0f;
+//    private static final float ROTATION_ANGLE = 150.0f;
 
-    private static final int MATRIX_SIZE = 16;
-//    private static final int MATRIX_SIZE = 5;
+    public static int MATRIX_SIZE = 16;
+//    public static int MATRIX_SIZE = 5;
 
-//    private static final float SCALE_FACTOR = 0.15f;
-    private static final float SCALE_FACTOR = 0.35f; //越小物体越小
+    public static float SCALE_FACTOR = 0.01f;
+//    private static final float SCALE_FACTOR = 0.35f; //越小物体越小
 
     private ARAnchor mArAnchor;
 

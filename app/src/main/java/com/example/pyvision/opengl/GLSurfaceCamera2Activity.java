@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,9 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
     // 相册选择回传吗
     public final static int GALLERY_REQUEST_CODE = 1;
 
+    private static final int REQUEST_CODE_CAMERA_PERMISSION = 200;
+    private static final String[] PERMISSIONS = {Manifest.permission.CAMERA};
+
     private static final String TAG = "GLSurfaceCamera2Act";
 
     private ImageView mCloseIv;
@@ -57,8 +61,40 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_glsurface_camera2);
+
         initView();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS,
+                    REQUEST_CODE_CAMERA_PERMISSION);
+        } else {
+            initCamera();
+        }
+    }
+    private void initCamera(){
+        mCameraView = findViewById(R.id.camera_view);
+        mCameraProxy = mCameraView.getCameraProxy();
+    }
+
+
+    public void onRequestPermissionsResult(
+            int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(
+                        this,
+                        "You can't use image classification example without granting CAMERA permission",
+                        Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            } else {
+                initCamera();
+            }
+        }
     }
 
     private void initView() {
@@ -70,18 +106,21 @@ public class GLSurfaceCamera2Activity extends AppCompatActivity implements View.
         mTakePictureIv.setOnClickListener(this);
         mPictureIv = findViewById(R.id.picture_iv);
         mPictureIv.setOnClickListener(this);
-        mPictureIv.setImageBitmap(ImageUtils.getLatestThumbBitmap());
+
 
         mPreviewSwitchBtn = findViewById(R.id.preview_switch);
         mPreviewSwitchBtn.setOnClickListener(this);
         mSelectImageBtn = findViewById(R.id.choose_pic);
         mSelectImageBtn.setOnClickListener(this);
+//        checkPermissionREAD_EXTERNAL_STORAGE(this);
 
+        //mPictureIv.setImageBitmap(ImageUtils.getLatestThumbBitmap());
 
-        mCameraView = findViewById(R.id.camera_view);
-        mCameraProxy = mCameraView.getCameraProxy();
 //        mCameraProxy.setImageAvailableListener();
+
+
     }
+
 
     @Override
     public void onClick(View v) {

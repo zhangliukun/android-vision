@@ -113,4 +113,20 @@
         android:layout_alignParentBottom="true"
         android:text="预览切换" />
 
+    <Button
+        android:id="@+id/scale_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/preview_btn"
+        android:text="放大" />
+
+    <Button
+        android:id="@+id/rotate_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/scale_btn"
+        android:text="旋转" />
+
 </RelativeLayout>

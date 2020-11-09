@@ -70,6 +70,8 @@ public class WorldActivity extends Activity {
 
     private Button selectBtn;
     private Button previewBtn;
+    private Button scaleBtn;
+    private Button rotateBtn;
 
     private Uri imageUri;
 
@@ -114,6 +116,16 @@ public class WorldActivity extends Activity {
         previewBtn.setOnClickListener(view->{
             mRenderUtil.setTransfer(!mRenderUtil.getTransfer());
         });
+        scaleBtn = findViewById(R.id.scale_btn);
+        rotateBtn = findViewById(R.id.rotate_btn);
+        scaleBtn.setVisibility(View.GONE);
+        rotateBtn.setVisibility(View.GONE);
+//        scaleBtn.setOnClickListener(view ->{
+//            VirtualObject.SCALE_FACTOR *= 10;
+//        });
+//        rotateBtn.setOnClickListener(view->{
+//            VirtualObject.ROTATION_ANGLE += 30.0f;
+//        });
     }
 
     private void initGestureDetector() {

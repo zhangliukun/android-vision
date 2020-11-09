@@ -63,6 +63,7 @@ public class Camera2GLSurfaceView extends GLSurfaceView implements GLSurfaceView
 
     private void init(Context context) {
         mActivity = (Activity) context;
+
         mCameraProxy = new Camera2Proxy((Activity) context);
         setEGLContextClientVersion(2);
         setRenderer(this);

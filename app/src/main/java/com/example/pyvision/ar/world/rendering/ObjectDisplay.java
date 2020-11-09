@@ -152,7 +152,7 @@ public class ObjectDisplay {
     }
 
     private void initGlTextureData(Context context) {
-        try (InputStream inputStream = context.getAssets().open("andy/andy.png")) {
+        try (InputStream inputStream = context.getAssets().open("chair1/wenli.jpg")) {
             textureBitmap = BitmapFactory.decodeStream(inputStream);
             resultBitmap = Bitmap.createBitmap(textureBitmap.getWidth(), textureBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         } catch (IllegalArgumentException | IOException e) {
@@ -207,7 +207,7 @@ public class ObjectDisplay {
 //        try (InputStream objInputStream = context.getAssets().open("AR_logo.obj")) {
 //        try (InputStream objInputStream = context.getAssets().open("hourse/19446_horse_in_profile_v1_NEW.obj")) {
 //        try (InputStream objInputStream = context.getAssets().open("BMW850/BMW850.obj")) {
-        try (InputStream objInputStream = context.getAssets().open("andy/andy.obj")) {
+        try (InputStream objInputStream = context.getAssets().open("chair1/chair1.obj")) {
 //        try (InputStream objInputStream = context.getAssets().open("car/camaro.obj")) {
             obj = ObjReader.read(objInputStream);
             obj = ObjUtils.convertToRenderable(obj);
